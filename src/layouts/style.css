@@ -1,0 +1,19 @@
+.height-100 {
+    height: -webkit-fill-available;
+}
+
+.display-center {
+    margin-bottom: -6px;
+}
+
+.each-item {
+    width: 310px;
+    margin: 10px !important;
+    display: flex;
+    align-items: center;
+}
+
+.each-item .title {
+    font-weight: bold;
+    margin-right: 5px;
+}
