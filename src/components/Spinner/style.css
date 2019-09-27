@@ -1,0 +1,26 @@
+.sweet-loading {
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    visibility: hidden;
+    height: 100%;
+    left: 0;
+    text-align: center;
+    top: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 99999;
+    transition: all .5s ease;
+
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+.sweet-loading.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sweet-loading .spinner-logo {
+    width: 75px;
+    margin-bottom: 3rem;
+}

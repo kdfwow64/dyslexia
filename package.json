@@ -18,8 +18,10 @@
     "react-dom": "^16.4.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.4",
+    "react-spinners": "^0.6.1",
     "react-textarea-autosize": "^7.1.0",
-    "reactstrap": "^8.0.1"
+    "reactstrap": "^8.0.1",
+    "speak-tts": "^2.0.8"
   },
   "scripts": {
     "start": "react-scripts start",

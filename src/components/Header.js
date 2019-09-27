@@ -26,10 +26,10 @@ class Header extends Component {
             onClick={onClickDrawerOpen}
             className={classNames(classes.menuButton, open && classes.hide)}
           >
-            {/* <MenuIcon /> */}
+            <MenuIcon />
           </IconButton>
           <Typography variant="title" color="inherit" noWrap>
-            Dyslexia
+            Dyslexic Eye
           </Typography>
         </Toolbar>
       </AppBar>

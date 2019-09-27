@@ -14,13 +14,6 @@ import { fontSizeLists } from '../config/fontSizeLists';
 import ColorButton from './ColorButton';
 
 class SettingBar extends Component {
-  boldPunctuation = (e) => {
-
-  }
-
-  dash = (e) => {
-
-  }
   render() {
     const { fontSize, onChangeFontSize, color, onColorChange, fontFamily, onFontFamilyChange, fontSizePunc, onChangeFontSizePunc, boldPunctuation, dashFunction } = this.props;
 

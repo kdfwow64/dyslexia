@@ -58,10 +58,13 @@ class ColorButton extends React.Component {
         <div style={ styles.swatch } onClick={ this.handleClick }>
           <div style={ styles.color } />
         </div>
-        { this.state.displayColorPicker ? <div style={ styles.popover }>
-          <div style={ styles.cover } onClick={ this.handleClose }/>
-          <SketchPicker color={ color } onChange={ onColorChange } />
-        </div> : null }
+        { this.state.displayColorPicker ?
+          <div style={ styles.popover }>
+            <div style={ styles.cover } onClick={ this.handleClose }/>
+            <SketchPicker color={ color } onChange={ onColorChange } />
+          </div>
+          : null
+        }
 
       </div>
     )
