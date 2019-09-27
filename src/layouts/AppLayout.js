@@ -158,6 +158,7 @@ class AppLayout extends Component {
     if(speech.hasBrowserSupport()) { // returns a boolean
         console.log("speech synthesis supported");
     }
+
     speech
     .init({
       volume: 0.5,
@@ -173,9 +174,9 @@ class AppLayout extends Component {
       }
     });
 
-    const temp = this.state.textarea.content.substr(
+    const temp = this.state.textarea.content.substring(
       this.state.textarea.selection.startOffset, this.state.textarea.selection.endOffset
-    );
+    ).replace(/(\r\n|\n|\r)/gm, "");
 
     speech.speak({
         text: temp,
@@ -187,15 +188,11 @@ class AppLayout extends Component {
   }
 
   seeDefinition = () => {
-    const temp = this.state.textarea.content.substr(
+    var temp = this.state.textarea.content.substring(
       this.state.textarea.selection.startOffset, this.state.textarea.selection.endOffset
-    ).replace(" ", "");
-    
-    this.closeOptionPopup();
-    this.setState({
-      loading: true
-    });
-
+    );
+    temp = temp.replace(/(\r\n|\n|\r)/gm, "");
+    temp = temp.replace(/ /g, "");
     fetch("http://mydictionaryapi.appspot.com/?define="+temp+"&lang=en", {
       "method": "GET"
     })
@@ -223,6 +220,11 @@ class AppLayout extends Component {
           loading: false
         });
       });
+    
+    this.closeOptionPopup();
+    this.setState({
+      loading: true
+    });
   }
 
   render() {

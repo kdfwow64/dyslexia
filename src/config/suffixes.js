@@ -404,7 +404,7 @@ export const preSuffixes = [
 export const suffixes = [
     {
         word:         'admirable',
-        wordWithDash: 'admir-able'
+        wordWithDash: 'admire-able'
     },
     {
         word:         'agreeable',

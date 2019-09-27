@@ -32,7 +32,6 @@ export default class NewTextArea extends Component {
 
     selectionUpdateListener = (e) => {
         this.props.onChangeSelection(this.getSelection(this.textarea), this.textarea.selectionEnd);
-        console.log(e);
         // this.setState({
         //     selection: this.getSelection(this.textarea)
         // });
