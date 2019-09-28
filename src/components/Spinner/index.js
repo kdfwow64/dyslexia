@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { RiseLoader } from 'react-spinners';
 import classNames from 'classnames';
-import logo from './react-logo.png';
+import logo from './logo.jpg';
 import './style.css';
 
 export default class Spinner extends React.Component {
