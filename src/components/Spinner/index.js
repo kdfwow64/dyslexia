@@ -25,7 +25,7 @@ export default class Spinner extends React.Component {
                   <img src={logo} className="spinner-logo" alt="" />
                   <RiseLoader sizeUnit="px"
                       size={20}
-                      color={'#2C6CDF'}
+                      color={'rgb(63,81,181)'}
                       loading={this.props.loading}
                   />
               </div>
