@@ -193,33 +193,55 @@ class AppLayout extends Component {
     );
     temp = temp.replace(/(\r\n|\n|\r)/gm, "");
     temp = temp.replace(/ /g, "");
-    fetch("http://mydictionaryapi.appspot.com/?define="+temp+"&lang=en", {
-      "method": "GET"
-    })
-      .then(response => response.json())
-      .then(data => {
-        const keys = Object.keys(data[0].meaning);
-        var definition = '';
-        for(var i = 0; i< keys.length;i++) {
-          definition += keys[i] + ": \r\n";
-          data[0].meaning[keys[i]].map((item, index) => {
-            definition += "\r\n \t";
-            definition += "-" + item.definition;
+
+    fetch("https://www.dictionaryapi.com/api/v3/references/sd4/json/"+temp+"?key=fcf06d2f-d3f8-45b9-a94d-d9c9d40ee515", {
+          "method": "GET"
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data[0]);
+            var definition = '';
+            if('shortdef' in data[0]) {
+              definition = data[0].shortdef;
+              console.log(data[0].shortdef);
+            }
+            
+            this.setState({
+              definitionValue: temp,
+              definitionDescription: definition,
+              loading: false
+            });
+          })
+          .catch(err => {
+            fetch("http://mydictionaryapi.appspot.com/?define="+temp+"&lang=en", {
+          "method": "GET"
+        })
+          .then(response => response.json())
+          .then(data => {
+            const keys = Object.keys(data[0].meaning);
+            var definition = '';
+            for(var i = 0; i< keys.length;i++) {
+              definition += keys[i] + ": \r\n";
+              data[0].meaning[keys[i]].map((item, index) => {
+                definition += "\r\n \t";
+                definition += "-" + item.definition;
+              });
+            }
+            this.setState({
+              definitionValue: temp,
+              definitionDescription: definition,
+              loading: false
+            });
+          })
+          .catch(err => {
+
+            
+
           });
-        }
-        this.setState({
-          definitionValue: temp,
-          definitionDescription: definition,
-          loading: false
-        });
-      })
-      .catch(err => {
-        this.setState({
-          definitionValue: temp,
-          definitionDescription: "No Description!",
-          loading: false
-        });
-      });
+              });
+
+
+    
     
     this.closeOptionPopup();
     this.setState({
