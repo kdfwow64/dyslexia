@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { Row } from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -9,11 +10,16 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Speech from 'speak-tts';
 
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+
 import appRoutes from '../routes/app';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import SettingBar from '../components/SettingBar';
 import NewTextArea from '../components/NewTextArea';
+import ModernTextArea from '../components/ModernTextArea';
 import PopupMenu from '../components/PopupMenu';
 import Spinner from '../components/Spinner';
 import appLayoutStyle from '../assets/jss/appLayoutStyle';
@@ -43,7 +49,9 @@ class AppLayout extends Component {
       definitionValue: '',
       definitionDescription: '',
       isOpenOptionPopup: false,
-      loading: false
+      loading: false,
+      editorState: EditorState.createEmpty(),
+      selectedText: ''
     };
   }
 
@@ -89,49 +97,22 @@ class AppLayout extends Component {
   }
 
   dashFunction = () => {
-    var content = this.state.textarea.content;
+    var content = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
     preSuffixes.map((item, index) => {
       content = content.replace(item.word, item.wordWithDash);
     });
     suffixes.map((item, index) => {
       content = content.replace(item.word, item.wordWithDash);
     });
-    this.setState({
-      textarea: {
-        ...this.state.textarea,
-        content
-      }
-    });
-  }
-
-  handleChangeTextArea = (e) => {
-    this.setState({
-      textareaVal: e.target.value
-    })
-  }
-
-  onChangeTextArea = (value, offset) => {
-    this.setState({
-      textarea: {
-        content: value,
-        selection: offset
-      }
-    });
-    if(value === '') {
-      this.closeOptionPopup();
+    let editorState = EditorState.createEmpty();
+    if (htmlToDraft(content)) {
+      const contentBlock = htmlToDraft(content);
+      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      editorState = EditorState.createWithContent(contentState);
     }
-  }
-
-  onChangeSelection = (offset, selectionEnd) => {
     this.setState({
-      textarea: {
-        ...this.state.textarea,
-        selection: offset
-      }
+      editorState
     });
-    if( offset.startOffset !== offset.endOffset) {
-      this.openOptionPopup();
-    }
   }
 
   changeDefinitionValue = (e) => {
@@ -174,9 +155,7 @@ class AppLayout extends Component {
       }
     });
 
-    const temp = this.state.textarea.content.substring(
-      this.state.textarea.selection.startOffset, this.state.textarea.selection.endOffset
-    ).replace(/(\r\n|\n|\r)/gm, "");
+    const temp = this.state.selectedText.replace(/(\r\n|\n|\r)/gm, "");
 
     speech.speak({
         text: temp,
@@ -188,9 +167,7 @@ class AppLayout extends Component {
   }
 
   seeDefinition = () => {
-    var temp = this.state.textarea.content.substring(
-      this.state.textarea.selection.startOffset, this.state.textarea.selection.endOffset
-    );
+    var temp = this.state.selectedText.replace(/(\r\n|\n|\r)/gm, "");
     temp = temp.replace(/(\r\n|\n|\r)/gm, "");
     temp = temp.replace(/ /g, "");
 
@@ -199,13 +176,11 @@ class AppLayout extends Component {
         })
           .then(response => response.json())
           .then(data => {
-            console.log(data[0]);
             var definition = '';
             if('shortdef' in data[0]) {
               definition = data[0].shortdef;
-              console.log(data[0].shortdef);
             }
-            
+
             this.setState({
               definitionValue: temp,
               definitionDescription: definition,
@@ -227,6 +202,7 @@ class AppLayout extends Component {
                 definition += "-" + item.definition;
               });
             }
+            console.log(definition);
             this.setState({
               definitionValue: temp,
               definitionDescription: definition,
@@ -235,18 +211,27 @@ class AppLayout extends Component {
           })
           .catch(err => {
 
-            
-
           });
               });
 
 
-    
-    
     this.closeOptionPopup();
     this.setState({
       loading: true
     });
+  }
+
+  updateEditorState = (editorState) => {
+    this.setState({
+      editorState
+    });
+    if (editorState.getSelection().getStartOffset() !== editorState.getSelection().getEndOffset()) {
+      var selectedText = editorState.getCurrentContent().getPlainText().substring(editorState.getSelection().getStartOffset(), editorState.getSelection().getEndOffset());
+      this.setState({
+        selectedText
+      });
+      this.openOptionPopup();
+    }
   }
 
   render() {
@@ -295,13 +280,8 @@ class AppLayout extends Component {
                       see={this.seeDefinition}
                     />
                 }
-                <NewTextArea
-                  fontSize={fontSize}
-                  fontFamily={fontFamily}
-                  color={color}
-                  textarea={textarea}
-                  onChange={this.onChangeTextArea}
-                  onChangeSelection={this.onChangeSelection}
+                <ModernTextArea editorState={this.state.editorState}
+                  onEditorStateChange={this.updateEditorState}
                 />
               </Row>
               <Row>

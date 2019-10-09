@@ -1,0 +1,27 @@
+.demo-wrapper .color-div {
+    position: relative;
+}
+
+.demo-wrapper .color-div .color-modal {
+    position: absolute;
+    right: -70px;
+    top: 135%;
+    z-index: 10;
+}
+
+.demo-wrapper .color-div .color-icon-div {
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.demo-wrapper .color-div .color-icon-div:hover {
+    box-shadow: 1px 1px 0px #BFBDBD;
+}
+
+.demo-wrapper .color-div .color-icon-div .color-icon {
+    width: 20px;
+}
+
+.demo-wrapper .color-div[aria-expanded=true] .color-icon-div {
+    box-shadow: 1px 1px 0px #BFBDBD inset;
+}
