@@ -79,9 +79,47 @@ class AppLayout extends Component {
     this.setState({
       fontSizePunc: e.target.value
     });
+    String.prototype.replaceAll = function(search, replacement) {
+        var target = this;
+        return target.split(search).join(replacement);
+    };
+    var content = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+    var puncArray = ["?","!"];
+    console.log(content);
+    for(let i = 0;i<puncArray.length;i++) {
+      console.log(content.indexOf(puncArray[i]));
+      content = content.replaceAll(puncArray[i], '<span style="font-size:'+e.target.value+'px">' + puncArray[i] +'</span>');
+    }
+    console.log(content);
+    let editorState = EditorState.createEmpty();
+    if (htmlToDraft(content)) {
+      const contentBlock = htmlToDraft(content);
+      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      editorState = EditorState.createWithContent(contentState);
+    }
+    this.setState({
+      editorState
+    });
   }
 
   onColorChange = (color) => {
+    var content = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+    console.log(content);
+   
+    // var reg = new RegExp("(color.*?;)");
+    content.replace("<p>", '<p style="color: "'+ color.rgb +'>')
+    // console.log(content);
+    // content.replace(reg, "color: "+color.rgb);
+    // console.log(content);
+    let editorState = EditorState.createEmpty();
+    if (htmlToDraft(content)) {
+      const contentBlock = htmlToDraft(content);
+      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      editorState = EditorState.createWithContent(contentState);
+    }
+    this.setState({
+      editorState
+    });
     this.setState({
       color: color.rgb
     });
@@ -180,10 +218,14 @@ class AppLayout extends Component {
             if('shortdef' in data[0]) {
               definition = data[0].shortdef;
             }
+            var def = '';
+            for(let i = 0; i<definition.length;i ++) {
+              def += "- " + definition[i] + ": \r\n";;
+            }
 
             this.setState({
               definitionValue: temp,
-              definitionDescription: definition,
+              definitionDescription: def,
               loading: false
             });
           })
@@ -202,7 +244,6 @@ class AppLayout extends Component {
                 definition += "-" + item.definition;
               });
             }
-            console.log(definition);
             this.setState({
               definitionValue: temp,
               definitionDescription: definition,
@@ -226,11 +267,26 @@ class AppLayout extends Component {
       editorState
     });
     if (editorState.getSelection().getStartOffset() !== editorState.getSelection().getEndOffset()) {
-      var selectedText = editorState.getCurrentContent().getPlainText().substring(editorState.getSelection().getStartOffset(), editorState.getSelection().getEndOffset());
+      var selectionState = editorState.getSelection();
+      var anchorKey = selectionState.getAnchorKey();
+      var currentContent = editorState.getCurrentContent();
+      var currentContentBlock = currentContent.getBlockForKey(anchorKey);
+      var start = selectionState.getStartOffset();
+      var end = selectionState.getEndOffset();
+      var selectedText = currentContentBlock.getText().slice(start, end);
+      // var selectedText = editorState.getCurrentContent().getPlainText().substring(editorState.getSelection().getStartOffset(), editorState.getSelection().getEndOffset());
+      // console.log(editorState.getSelection());
+      // debugger;
+      // console.log(editorState.getSelection().getStartOffset(), editorState.getSelection().getEndOffset());
+      selectedText = selectedText.replace(/(\r\n|\n|\r)/gm, "");
+      selectedText = selectedText.replace(/ /g, "");
+      console.log(selectedText);
       this.setState({
         selectedText
       });
       this.openOptionPopup();
+    } else {
+      this.closeOptionPopup();
     }
   }
 
@@ -270,7 +326,7 @@ class AppLayout extends Component {
               dashFunction={this.dashFunction}
             />
             <div className="main-content">
-              <Row>
+              <Row className="option-div">
                 <label>MainTextArea</label>
                 {
                   isOpenOptionPopup &&
@@ -280,9 +336,11 @@ class AppLayout extends Component {
                       see={this.seeDefinition}
                     />
                 }
+              </Row>
+              <Row>
                 <ModernTextArea editorState={this.state.editorState}
-                  onEditorStateChange={this.updateEditorState}
-                />
+                    onEditorStateChange={this.updateEditorState}
+                  />
               </Row>
               <Row>
                 <p className="p-definition-box">

@@ -11,8 +11,8 @@ demo-wrapper {
   border: 1px solid #F1F1F1 !important;
   border-radius: 2px !important;
   background-color: white;
-}
-.demo-editorWrapper {
+  min-height: 100px;
+  box-shadow: 0px 0px 0px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
 }
 .demo-content {
   border: 1px solid #F1F1F1;

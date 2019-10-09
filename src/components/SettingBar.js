@@ -22,7 +22,7 @@ class SettingBar extends Component {
         <Toolbar>
           <Row>
             <Grid container justify="center">
-              <Grid item className="each-item">
+              {/* <Grid item className="each-item">
                 <label className="title">Font Size : </label>
                 <Paper>
                   <TextField
@@ -58,7 +58,7 @@ class SettingBar extends Component {
                     onChange={onFontFamilyChange}
                   />
                 </Paper>
-              </Grid>
+              </Grid> */}
               <Grid item className="each-item">
                 <label className="title">Punctuation Size : </label>
                 <Paper>

@@ -41,15 +41,12 @@ export default class PopupMenu extends Component {
             },
         });
         return (
-            <div style={ styles.popover }>
-                <div style={ styles.cover } onClick={ this.props.close }/>
-                <div className="popup-option">
-                    <div className="each-option" onClick={this.props.read}>
-                        Read This word
-                    </div>
-                    <div className="each-option" onClick={this.props.see}>
-                        Show Definition
-                    </div>
+            <div className="popup-option">
+                <div className="each-option" onClick={this.props.read}>
+                    Read This word
+                </div>
+                <div className="each-option" onClick={this.props.see}>
+                    Show Definition
                 </div>
             </div>
         );
