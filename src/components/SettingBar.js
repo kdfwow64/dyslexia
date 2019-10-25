@@ -19,7 +19,7 @@ class SettingBar extends Component {
 
     return (
       <AppBar position="static" color="default">
-        <Toolbar>
+        <Toolbar className="tool-bar">
           <Row>
             <Grid container justify="center">
               {/* <Grid item className="each-item">

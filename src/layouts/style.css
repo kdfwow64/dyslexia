@@ -7,7 +7,7 @@
 }
 
 .each-item {
-    width: 310px;
+    width: 200px;
     margin: 10px !important;
     display: flex;
     align-items: center;
@@ -88,4 +88,12 @@
 
 .rdw-option-wrapper[title=Superscript], .rdw-option-wrapper[title=Subscript], .rdw-remove-wrapper, .rdw-embedded-wrapper {
     display: none;
+}
+
+.tool-bar {
+    justify-content: center;
+}
+
+.font-weight {
+    font-weight: bold;
 }

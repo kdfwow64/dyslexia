@@ -27,6 +27,7 @@ import { suffixes, preSuffixes } from '../config/suffixes';
 import './style.css';
 
 
+var puncArray = [",",";", ":", ".", "!", "?", "'", '"', "-", "/", "(", ")", "[", "]", "*", "~", "`"];
 class AppLayout extends Component {
   constructor(props) {
     super(props);
@@ -79,18 +80,22 @@ class AppLayout extends Component {
     this.setState({
       fontSizePunc: e.target.value
     });
-    String.prototype.replaceAll = function(search, replacement) {
-        var target = this;
-        return target.split(search).join(replacement);
-    };
-    var content = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
-    var puncArray = ["?","!"];
-    console.log(content);
-    for(let i = 0;i<puncArray.length;i++) {
-      console.log(content.indexOf(puncArray[i]));
-      content = content.replaceAll(puncArray[i], '<span style="font-size:'+e.target.value+'px">' + puncArray[i] +'</span>');
+    
+    var editor1 = this.state.editorState.getCurrentContent();
+    var convertedToRaw = convertToRaw(editor1);
+
+    for( let i = 0 ; i < convertedToRaw['blocks'].length ; i ++ ) {
+      for(let j=0;j<convertedToRaw['blocks'][i].text.length;j++) {
+        if(puncArray.indexOf(convertedToRaw['blocks'][i].text[j]) >= 0) {
+          convertedToRaw['blocks'][i]['inlineStyleRanges'].push({
+            length: 1,
+            offset: j,
+            style: "fontsize-"+e.target.value
+          });
+        }
+      }
     }
-    console.log(content);
+    var content = draftToHtml(convertedToRaw);
     let editorState = EditorState.createEmpty();
     if (htmlToDraft(content)) {
       const contentBlock = htmlToDraft(content);
@@ -132,6 +137,31 @@ class AppLayout extends Component {
   }
 
   boldPunctuation = () => {
+    var editor1 = this.state.editorState.getCurrentContent();
+    var convertedToRaw = convertToRaw(editor1);
+    console.log(convertedToRaw);
+
+    for( let i = 0 ; i < convertedToRaw['blocks'].length ; i ++ ) {
+      for(let j=0;j<convertedToRaw['blocks'][i].text.length;j++) {
+        if(puncArray.indexOf(convertedToRaw['blocks'][i].text[j]) >= 0) {
+          convertedToRaw['blocks'][i]['inlineStyleRanges'].push({
+            length: 1,
+            offset: j,
+            style: "BOLD"
+          });
+        }
+      }
+    }
+    var content = draftToHtml(convertedToRaw);
+    let editorState = EditorState.createEmpty();
+    if (htmlToDraft(content)) {
+      const contentBlock = htmlToDraft(content);
+      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      editorState = EditorState.createWithContent(contentState);
+    }
+    this.setState({
+      editorState
+    });
   }
 
   dashFunction = () => {
